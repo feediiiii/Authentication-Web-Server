@@ -27,7 +27,6 @@ const storeVerificationCode = (email, code) => {
 }
 
 const retrieveVerificationCode = () => {
-
     //shpould fix
     const data = Cache.get("data")
 

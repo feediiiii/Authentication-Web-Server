@@ -16,6 +16,8 @@ const {
   storeVerificationCode,
   retrieveVerificationCode,
 } = require("../../../Providers/store_in_cache");
+const fs = require('fs');
+const path = require('path');
 
 const registerController = async (req, res) => {
   try {
@@ -168,13 +170,17 @@ const sending_verif_email = async (toEmail) => {
       expiresIn: "15m",
     });
 
-    const verificationLink = `http://localhost:5173/logIn/verify?token=${token}`;
+    const verificationLink = `http://localhost:5173/signIn/verify?token=${token}`;
+
+    // const templatePath = '../../../Templates/Email_verification_email.html';
+    const templatePath = path.resolve(__dirname, '../../../Templates/Email_verification_email.html');
+    const htmlContent = fs.readFileSync(templatePath, 'utf8');
 
     const mailOptions = {
       from: "no-reply@e-tafakna.com",
       to: toEmail,
       subject: "Email Verification",
-      html: `<h1 style="font-weight:bold">Click the following link to verify your email: </h><a href="${verificationLink}">${verificationLink}</a>`,
+      html: htmlContent.replace('{verificationLink}', verificationLink),
     };
 
     const info = await transporter.sendMail(mailOptions);
